@@ -1,0 +1,225 @@
+
+import turtle as t
+import random 
+screen = t.Screen()
+screen.title("snake game")
+screen.setup(height=800, width=900)
+t.tracer(0, 0)
+p = t.Turtle()
+p.speed(0)
+p.hideturtle()
+p.penup()
+
+p.pensize(4)
+p.color("black")
+p.begin_fill()
+p.penup()
+p.fillcolor("light green")
+p.goto(-440, -390)
+p.pendown()
+p.goto(440, -390)
+p.goto(440, 390)
+p.goto(-440, 390)
+p.goto(-440, -390)
+p.penup()
+p.end_fill()
+p.goto(0, 350)
+p.write("SNAKE GAME", align="center",
+        font=("Arial", 30, "bold"))
+p.pensize(1)
+
+s = t.Turtle()
+s.hideturtle()
+s.pensize(1)
+s.penup()
+
+go = t.Turtle()
+go.penup()
+go.hideturtle()
+f = t.Turtle()
+f.hideturtle()
+x = 0
+y = 0
+score = 0 
+is_collision = False
+foodstep = 100
+fo = t.Turtle()
+head = t.Turtle()
+head.color("black")
+head.speed(0)
+head.hideturtle()
+head.penup()
+def hea():
+    head.clear()
+    head.goto(x, y)
+    head.setheading(0)
+    head.pendown()
+    head.begin_fill()
+    head.fillcolor("black")
+    head.penup()
+    if direction == "right":
+        head.pendown()
+        head.forward(headwidth)
+        head.right(90)
+        head.forward(10)
+        head.right(90)
+        head.forward(headwidth)
+        head.right(90)
+        head.forward(10)
+        head.right(90)
+    elif direction == "left":
+        head.pendown()
+        head.backward(headwidth)
+        head.left(90)
+        head.backward(10)
+        head.left(90)
+        head.backward(headwidth)
+        head.left(90)
+        head.backward(10)
+        head.left(90)
+    elif direction == "up":
+        head.pendown()
+        head.left(90)
+        head.forward(headwidth)
+        head.right(90)
+        head.forward(10)
+        head.right(90)
+        head.forward(headwidth)
+        head.right(90)
+        head.forward(10)
+        head.right(90)
+    elif direction == "down":
+        head.pendown()
+        head.right(90)
+        head.forward(headwidth)
+        head.left(90)
+        head.forward(10)
+        head.left(90)
+        head.forward(headwidth)
+        head.left(90)
+        head.forward(10)
+        head.left(90)
+    head.end_fill()
+    
+segments = []
+headwidth = 10
+
+# def add_segment():
+#     glo
+#     segment = t.Turtle()
+#     segment.hideturtle()
+#     segment.
+
+
+# for i in range(3):
+#     add_segment()
+# def move_segment():
+
+def updpoints():
+    global score, foodstep
+    fo.clear()
+    fo.hideturtle()
+    fo.penup()
+    fo.goto(350, 350)
+    fo.write(f"points: {score}",  align="right", font=("Arial", 20, "bold"))
+    fo.goto(350, 300)
+    fo.write(f"food moving in {foodstep}steps", align="right", font=("Arial", 20, "bold"))
+
+direction = "right"
+def up():
+    global direction
+    if direction != "down":
+        direction = "up"
+def down():
+    global direction
+    if direction != "up":
+        direction = "down"
+def left():
+    global direction
+    if direction != "right":
+        direction = "left"
+def right():
+    global direction
+    if direction != "left":
+        direction = "right"
+def collision():
+    global x, y
+    global is_collision, head
+    if x <= -399 or x >= 380 or y <= -400 or y >= 400:
+        is_collision = True
+        head.goto(0, 0)
+        go.goto(0, 0)
+        go.write("game over. press space to restart.", align="center", font=("arial", 20, "bold"))
+    s.hideturtle()
+    s.penup()
+    f.penup()
+def res():
+    global x, y
+    global is_collision
+    if is_collision == True:
+        is_collision = False   
+        go.reset()
+        go.hideturtle()
+        x = 0
+        y = 0
+fx = 0
+fy = 0
+def food():
+    global fx, fy
+    f.penup()
+    fx = random.randint(-400, 400)
+    fy = random.randint(-350, 350)
+    f.shape("circle")
+    f.color("red")
+    f.goto(fx ,fy)
+    f.showturtle() 
+
+def eat():
+    global score
+    global x, y, fx, fy, headwidth
+    if 0 <= abs(x - fx) <= 15 and 0 <= abs(y - fy) <= 15:
+        score+=10
+        food()
+        
+        headwidth+=10
+        hea()
+        
+        # add_segment()
+def gameloop():
+    global x, y
+    global is_collision, foodstep
+    if is_collision == False:
+        collision()
+        if direction == "up":
+            y+=20
+        elif direction == "down":
+            y-=20
+        elif direction == "left":
+            x-=20
+        elif direction == "right":
+            x+=20
+        if foodstep <= 0:
+            food()
+            foodstep = 100
+        foodstep -= 1
+        updpoints()
+        hea()
+        eat()
+    t.update()
+    screen.ontimer(gameloop, 200)
+food()
+
+
+
+
+# Keyboard controls
+screen.onkey(up, "w")
+screen.onkey(down, "s")
+screen.onkey(left, "a")
+screen.onkey(right, "d")
+screen.onkey(res, "space")
+screen.listen()
+
+gameloop()
+
+t.mainloop()
